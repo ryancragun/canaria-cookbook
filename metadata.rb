@@ -1,0 +1,7 @@
+name             'canaria'
+maintainer       'Ryan Cragun'
+maintainer_email 'ryan@chef.io'
+license          'Apache 2.0'
+description      'Add a canary? method to the Chef DSL'
+long_description 'Add a canary? method to the Chef DSL'
+version          '0.1.0'
