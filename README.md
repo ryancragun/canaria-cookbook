@@ -3,7 +3,7 @@
 A library cookbook is to extend the Chef DSL to include a `canary?` helper. When
 properly configured it will allow nodes to make autonomous decisions based on a
 consistent hashing algorithm. It was developed to allow nodes to change
-environments for rolling upgrades, however it could be used to guard for any
+environments for rolling upgrades, however, it could be used to guard for any
 canary operations you'd like. Most of the time it will be within 5% of the
 configured canary percentage.
 
