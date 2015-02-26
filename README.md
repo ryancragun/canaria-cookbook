@@ -12,13 +12,14 @@ After the pipeline has gone green in Development, Rehearsal and Union environmen
 and it's time to push out changes to nodes in Production, we first want to test
 our changes on a few select canary nodes and then do a rolling upgrade out to
 10%, 50% and 100% percent of all nodes.  Because our attributes and versions are
-pinned in the Environment we'll first promote our changes to a Canary
-environment, do a rolling upgrade, and then promote our Canary Production and
-move all of nodes to Production.  We can control which nodes are canaries by
-using hostname overrides, a percentage of all nodes, or a combination of both.
+pinned in the Chef environment we'll first promote our changes to a Canary
+environment, do a rolling upgrade, and then promote our Canary environment to
+Production and move all of our nodes to Production.  We can control which nodes
+are canaries by using hostname overrides, a percentage of all nodes, or a
+combination of both.
 
-First, the pipeline will promote a change to our Application specific canary node
-attribute overrides for a few specific hosts.
+First, the pipeline will promote a change to our application specific Canary and
+Production with changes to the attribute overrides for a few specific hosts.
 
 ```ruby
 # environments/production.rb
@@ -38,13 +39,12 @@ override_attributes(
 )
 ```
 
-This change will be made in both the Production and application specific
-canary environments.  Changing the value in both environments helps to ensure
-that all canaries will stay in the canary environment.
+Changing the value in both environments helps to ensure that all canaries will
+stay in the canary environment.
 
-After we've done our verification, the pipeline will promote the canary
+After we've done our verification, the pipeline will change the canary
 percentage to 10%, and 50% to both environments.  These promotions could be manual
-or triggered with automated verification tests.
+or triggered by successful automated verification tests.
 
 ```ruby
 # environments/production.rb
@@ -132,7 +132,7 @@ if canary?
     action :install
   end
 else
-  # make sure we're in prod
+  # Make sure we're in prod
   node.set['chef_environment'] = 'production'
 
   # Or install the stable version of the package if you don't use multiple
@@ -146,7 +146,7 @@ end
 
 ## Attributes
 
-If you only have a single application in any given environent you could set
+If you only have a single application in any given environment you could set
 these at the environment level.  If you have multiple applications that share
 and environment you should set these attributes to unique application specific
 values.
