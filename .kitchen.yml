@@ -3,13 +3,39 @@ driver:
   name: vagrant
 
 provisioner:
-  name: chef_solo
+  name: chef_zero
+  environments_path: './test/environments'
 
 platforms:
   - name: ubuntu-12.04
   - name: centos-6.4
 
 suites:
+  - name: zero
+    run_list:
+      - canaria-test::default
+    attributes:
+      canaria:
+        percentage: 0
+  - name: twentyfive
+    run_list:
+      - canaria-test::default
+    attributes:
+      canaria:
+        percentage: 25
+  - name: fifty
+    run_list:
+      - canaria-test::default
+    attributes:
+      canaria:
+        percentage: 50
+  - name: onehundred
+    run_list:
+      - canaria-test::default
+    attributes:
+      canaria:
+        percentage: 100
   - name: default
     run_list:
+      - canaria-test::default
     attributes:

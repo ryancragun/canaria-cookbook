@@ -1,5 +1,6 @@
 require_relative File.expand_path('libraries/canaria')
 require 'rspec'
+require 'chef'
 
 describe Canaria do
   describe '.canary?' do
@@ -72,6 +73,55 @@ describe Canaria do
             expect(described_class.canary?(node, 0, overrides)).to eq(false)
           end
         end
+      end
+    end
+  end
+
+  describe 'chef_environment' do
+    let(:node) { instance_double('Node', chef_environment: true) }
+    let(:new_env) { 'canary' }
+
+    context 'when the environment exists' do
+      before do
+        allow(Chef::Environment)
+          .to receive(:load)
+          .with(new_env)
+          .and_return(true)
+      end
+
+      it 'sets the environment on the node' do
+        expect(node).to receive(:chef_environment).with(new_env).once
+        Canaria.chef_environment(node, new_env)
+      end
+    end
+
+    context 'when the environment does not exist' do
+      let(:exception) do
+        response = Net::HTTPResponse.new('1.1', '404', 'ON NO')
+        Net::HTTPServerException.new('OH NO', response)
+      end
+
+      let(:msg) do
+        "Chef Environment error: #{new_env} does not exist, cannot change."
+      end
+
+      before do
+        allow(Chef::Environment)
+          .to receive(:load)
+          .with(new_env)
+          .and_raise(exception)
+
+        allow(Chef::Log).to receive(:error).with(msg)
+      end
+
+      it 'logs the error' do
+        expect(Chef::Log).to receive(:error).with(msg)
+        expect { Canaria.chef_environment(node, new_env) }.to raise_error
+      end
+
+      it 'does not attempt to change the environment' do
+        expect(node).to_not receive(:anything)
+        expect { Canaria.chef_environment(node, new_env) }.to raise_error
       end
     end
   end

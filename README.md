@@ -1,11 +1,11 @@
 # canaria-cookbook
 
-A library cookbook is to extend the Chef DSL to include a `canary?` helper. When
-properly configured it will allow nodes to make autonomous decisions based on a
-consistent hashing algorithm. It was developed to allow nodes to change
-environments for rolling upgrades, however, it could be used to guard for any
-canary operations you'd like. Most of the time it will be within 5% of the
-configured canary percentage.
+A library cookbook is to extend the Chef DSL to include `canary?` and
+'chef_environment =` helpers. When properly configured it will allow nodes to
+make autonomous canary decisions based on a consistent hashing algorithm. It
+was developed to allow nodes to change environments for rolling upgrades,
+however, it could be used to guard for any canary operations you'd like.
+Most of the time it will be within 5% of the configured canary percentage.
 
 ### Rolling canary environments explained
 After the pipeline has gone green in Development, Rehearsal and Union environments
@@ -98,10 +98,16 @@ override_attributes(
 In the event of a rollback, all we have to do is change the canary percentage to
 zero in both environments.
 
-### How the `canary?` DSL helper works
+### How the the DSL helpers work
+`canary?`
 The helper function will hash the node name and do a modulo over 100 to determine
 which out of 100 groups the node belongs to. If node is an a groups is between
 0 and the configured percentage it will be a canary.
+
+`set_chef_environment`
+Unlike `node.chef_environment`, `set_chef_environment` will verify that the
+environment exists during compile time and raise an error if an invalid
+environment is used.
 
 ### How to use it
 Include `canaria` in your node's `run_list`:
@@ -118,12 +124,12 @@ In your nodes application recipe set the canaria percentage attribute value.
 
 ```ruby
 # recipes/canary.rb
-node.set['canaria']['percent'] = node['my_app']['canary']['percent']
+node.set['canaria']['percentage'] = node['my_app']['canary']['percentage']
 node.set['canaria']['overrides'] = node['my_app']['canary']['overrides']
 
 if canary?
   # Do canary things like change into the canary environment
-  node.set['chef_environment'] = node['my_app']['canary']['environment']
+  set_chef_environment(node['my_app']['canary']['environment'])
 
   # Or maybe install the canary version of your application if you don't have
   # a separate environment
@@ -133,7 +139,7 @@ if canary?
   end
 else
   # Make sure we're in prod
-  node.set['chef_environment'] = 'production'
+  set_chef_environment('production')
 
   # Or install the stable version of the package if you don't use multiple
   # environments
@@ -159,7 +165,7 @@ values.
     <th>Default</th>
   </tr>
   <tr>
-    <td><tt>['canaria']['percent']</tt></td>
+    <td><tt>['canaria']['percentage']</tt></td>
     <td>Integer</td>
     <td>What percentage of nodes should be selected as canaries</td>
     <td><tt>0</tt></td>

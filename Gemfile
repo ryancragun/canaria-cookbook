@@ -15,6 +15,10 @@ gem 'berkshelf'
 # end
 
 gem 'thor-foodcritic'
-gem "test-kitchen"
-gem "kitchen-vagrant"
-gem 'rspec'
+gem 'test-kitchen'
+gem 'kitchen-vagrant'
+
+group :development do
+  gem 'chef'
+  gem 'rspec'
+end
