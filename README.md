@@ -57,7 +57,7 @@ Use the helpers in your applications recipe
 
 if canary?
   # Do canary things like change into the canary environment
-  set_chef_environment(node['my_app']['canary']['environment'])
+  set_chef_environment(node['my_app']['canary']['canary_environment'])
 
   # Or maybe install the canary version of your application if you don't have
   # a separate environment
@@ -66,6 +66,9 @@ if canary?
     action :install
   end
 else
+  # Ensure we're in prod
+  set_chef_environment(node['my_app']['canary']['prod_environment'])
+
   # Or install the stable version of the package if you don't use multiple
   # environments
   my_app do
@@ -108,7 +111,7 @@ that all canaries will stay in the canary environment.
   override_attributes(
     'canaria' => {
       'overrides' => ['host.my_org.com'],
-      'percentage' => 10
+      'percentage' => 100
     }
   )
   ```
@@ -116,7 +119,7 @@ that all canaries will stay in the canary environment.
 * Wait for the nodes to converge and upgrade.  You can determine a safe grace
 period by summing the converge frequency, converge splay and average increase in converge length during upgrades.
 
-* Increase canary percentage in both environments
+* Increase canary percentage in the prod environment.
   ```ruby
   # environments/my_app_production.rb
   cookbook_versions(
@@ -137,7 +140,7 @@ period by summing the converge frequency, converge splay and average increase in
   override_attributes(
     'canaria' => {
       'overrides' => ['host.my_org.com'],
-      'percentage' => 20
+      'percentage' => 100
     }
   )
   ```
@@ -155,7 +158,7 @@ period by summing the converge frequency, converge splay and average increase in
   )
   override_attributes(
     'canaria' => {
-      'overrides' => ['host.my_org.com'],
+      'overrides' => [],
       'percentage' => 0
     }
   )
@@ -167,7 +170,7 @@ period by summing the converge frequency, converge splay and average increase in
   )
   override_attributes(
     'canaria' => {
-      'overrides' => ['host.my_org.com'],
+      'overrides' => [],
       'percentage' => 0
     }
   )
