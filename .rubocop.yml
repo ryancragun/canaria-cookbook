@@ -1,0 +1,12 @@
+AlignParameters:
+  Enabled: false
+ClassLength:
+  Enabled: false
+MethodLength:
+  Enabled: false
+PerceivedComplexity:
+  Enabled: false
+CyclomaticComplexity:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
