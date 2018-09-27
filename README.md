@@ -20,7 +20,7 @@ If you want to specify nodes you can set the overrides manually.  If you need an
 exact percentage of nodes you can do a knife search, sort, map to set the hostname
 overrides.
 
-## How the the DSL helpers work
+## How the DSL helpers work
 `canary?` works by hashing the node FQDN and does a modulo over 100 to determine
 which out of 100 groups the node belongs to. If nodes group is between
 0 and the configured percentage it will be a canary.
@@ -39,7 +39,7 @@ Include `canaria` in your node's `run_list`:
 }
 ```
 
-Configure the the percentage and overrides in your environments
+Configure the percentage and overrides in your environments
 
 ```ruby
 # environments/my_app_canary.rb
